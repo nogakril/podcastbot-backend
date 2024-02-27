@@ -3,6 +3,7 @@ from typing import Union, Any, Iterator
 import requests
 from openai import OpenAI, Stream
 from openai.types.chat import ChatCompletion, ChatCompletionChunk
+from requests import Response
 
 OPEN_API_SPEECH_URL = "https://api.openai.com/v1/audio/speech"
 
@@ -16,7 +17,7 @@ class OpenAIManager:
             "Authorization": f'Bearer {self.api_key}',
         }
 
-    def generate_audio_request(self, input_text) -> Iterator[Any]:
+    def generate_audio_request(self, input_text) -> Response:
         data = {
             "model": "tts-1",
             "input": input_text,
@@ -25,7 +26,7 @@ class OpenAIManager:
         }
         response = requests.post(OPEN_API_SPEECH_URL, headers=self.headers, json=data, stream=True)
         if response.status_code == 200:
-            return response.iter_content()
+            return response
         else:
             print(f"Error: {response.status_code} - {response.text}")
 
