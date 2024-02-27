@@ -1,0 +1,52 @@
+from typing import Union, Any, Iterator
+
+import requests
+from openai import OpenAI, Stream
+from openai.types.chat import ChatCompletion, ChatCompletionChunk
+
+OPEN_API_SPEECH_URL = "https://api.openai.com/v1/audio/speech"
+
+
+class OpenAIManager:
+    def __init__(self, api_key):
+        self.api_key = api_key
+        self.client = OpenAI(api_key=self.api_key)
+        self.voice = "nova"
+        self.headers = {
+            "Authorization": f'Bearer {self.api_key}',
+        }
+
+    def generate_audio_request(self, input_text) -> Iterator[Any]:
+        data = {
+            "model": "tts-1",
+            "input": input_text,
+            "voice": self.voice,
+            "response_format": "opus",
+        }
+        response = requests.post(OPEN_API_SPEECH_URL, headers=self.headers, json=data, stream=True)
+        if response.status_code == 200:
+            return response.iter_content()
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+
+    def generate_completion_request(self, message, model_context) -> Union[
+        ChatCompletion, Stream[ChatCompletionChunk]]:
+        completion = self.client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": model_context},
+                {"role": "user", "content": message},
+            ],
+            stream=True,
+            temperature=0,
+            max_tokens=500,
+        )
+        return completion
+
+    def generate_transcription_request(self, file_path) -> str:
+        audio_file = open(file_path, "rb")
+        transcription = self.client.audio.transcriptions.create(
+            model='whisper-1',
+            file=audio_file,
+        )
+        return transcription.text
