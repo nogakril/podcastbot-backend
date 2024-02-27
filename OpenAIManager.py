@@ -22,7 +22,7 @@ class OpenAIManager:
             "model": "tts-1",
             "input": input_text,
             "voice": self.voice,
-            "response_format": "opus",
+            "response_format": "wav",
         }
         response = requests.post(OPEN_API_SPEECH_URL, headers=self.headers, json=data, stream=True)
         if response.status_code == 200:
