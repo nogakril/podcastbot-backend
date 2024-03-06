@@ -73,3 +73,4 @@ class AudioManager:
 
         final_mix = music_with_fades.overlay(combined, position=fade_duration)
         final_mix.export(output_path, format="wav")
+        self.play_audio_file(output_path)

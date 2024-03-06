@@ -17,11 +17,10 @@ if __name__ == '__main__':
 
     text_to_speech_converter.generate_audio("Hello dear, what's your name?")
     name = speech_to_text_converter.speech_to_text(record_seconds=5)
-    text_to_speech_converter.stream_generated_audio(f"Very shortly introduce a podcast episode about nothing. Also, say your interviewee's name {name}",
-                                                    "You are a podcast host")
+    text_to_speech_converter.generate_audio("Which topic should we discuss in our podcast episode today?")
     topic = speech_to_text_converter.speech_to_text(record_seconds=5)
-    text_to_speech_converter.stream_generated_audio(f"Say your opinion on the chosen topic: {topic}"
-                                                    f"ask your interviewer a general opinion question related it.",
+    text_to_speech_converter.stream_generated_audio(f"Very shortly introduce a podcast episode about the topic: {topic}. "
+                                                    f"Introduce your interviewee named {name}. Ask a general opinion question related the topic",
                                                     "You are a podcast host")
     discussion = speech_to_text_converter.speech_to_text(record_seconds=20)
     text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question"
