@@ -1,5 +1,4 @@
-from typing import Union, Any, Iterator
-
+from typing import Union
 import requests
 from openai import OpenAI, Stream
 from openai.types.chat import ChatCompletion, ChatCompletionChunk
