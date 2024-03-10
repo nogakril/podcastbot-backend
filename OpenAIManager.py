@@ -48,5 +48,6 @@ class OpenAIManager:
         transcription = self.client.audio.transcriptions.create(
             model='whisper-1',
             file=audio_file,
+            language='en'
         )
         return transcription.text
