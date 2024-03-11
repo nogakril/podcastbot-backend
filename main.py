@@ -1,5 +1,4 @@
 from typing import Literal
-from gpiozero import Button
 from AudioManager import AudioManager
 from OpenAIManager import OpenAIManager
 from SpeechToTextConverter import SpeechToTextConverter
@@ -15,26 +14,26 @@ def run_bot():
     speech_to_text_converter = SpeechToTextConverter(audio_manager, openai_manager)
     text_to_speech_converter = TextToSpeechConverter(audio_manager, openai_manager)
 
-    text_to_speech_converter.generate_audio("Hello dear, what's your name?")
-    name = speech_to_text_converter.speech_to_text(record_seconds=5)
-    text_to_speech_converter.generate_audio("Which topic should we discuss in our podcast episode today?")
-    topic = speech_to_text_converter.speech_to_text(record_seconds=5)
-    text_to_speech_converter.stream_generated_audio(
-        f"Very shortly introduce a podcast episode about the topic: {topic}. "
-        f"Introduce your interviewee named {name}. Ask a general opinion question related the topic",
-        "You are a podcast host")
-    discussion = speech_to_text_converter.speech_to_text(record_seconds=20)
-    text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question"
-                                                    f"as respone to his\her previous answer: {discussion}",
-                                                    "You are a podcast host")
-    discussion = speech_to_text_converter.speech_to_text(record_seconds=20)
-    text_to_speech_converter.stream_generated_audio(f"Say goodbye and thanks to {name} for being here",
-                                                    "You are a podcast host")
-    audio_manager.combine_audio_files()
+    while True:
+        start_phrase = speech_to_text_converter.speech_to_text()
+        if start_phrase.lower() == "hello, i'm here.":
+            text_to_speech_converter.generate_audio("Hello dear, what's your name?")
+            name = speech_to_text_converter.speech_to_text()
+            text_to_speech_converter.generate_audio("Which topic should we discuss in our podcast episode today?")
+            topic = speech_to_text_converter.speech_to_text()
+            text_to_speech_converter.stream_generated_audio(
+                f"Very shortly introduce a podcast episode about the topic: {topic}. "
+                f"Introduce your interviewee named {name}. Ask a general opinion question related the topic",
+                "You are a podcast host")
+            discussion = speech_to_text_converter.speech_to_text(record_seconds=20)
+            text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question"
+                                                            f"as respone to his\her previous answer: {discussion}",
+                                                            "You are a podcast host")
+            discussion_2 = speech_to_text_converter.speech_to_text(record_seconds=20)
+            text_to_speech_converter.stream_generated_audio(f"Say goodbye and thanks to {name} for being here",
+                                                            "You are a podcast host")
+            audio_manager.combine_audio_files()
 
 
 if __name__ == '__main__':
-    button = Button(2)
-    while True:
-        button.wait_for_press()
-        run_bot()
+    run_bot()

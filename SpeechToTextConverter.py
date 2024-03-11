@@ -13,6 +13,10 @@ class SpeechToTextConverter:
             temp_file_path = tmp_file.name
         # self.__audio_manager.record_to_wav_file(file_path=temp_file_path, record_seconds=record_seconds)
         self.__audio_manager.record_to_wav_file(file_path=temp_file_path)
-        output = self.__openai_manager.generate_transcription_request(file_path=temp_file_path)
+        try:
+            output = self.__openai_manager.generate_transcription_request(file_path=temp_file_path)
+        except Exception as e:  # This catches any other exceptions
+            print("Caught an exception:", e)
+            output = ""
         print("Recorded: ", output)
         return output

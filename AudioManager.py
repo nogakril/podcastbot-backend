@@ -3,13 +3,14 @@ import wave
 import soundfile as sf
 from pydub import AudioSegment
 import webrtcvad
-
+import time
 
 class AudioManager:
     def __init__(self, music_file_path):
         self.audio = pyaudio.PyAudio()
         self.audio_files = []
         self.music_file_path = music_file_path
+        self.recording_timeout = 120
 
     def __del__(self):
         self.audio.terminate()
@@ -52,6 +53,8 @@ class AudioManager:
             frames = []
             silence_frames = 0
             detected_speech = False
+            start_time = time.time()
+
 
             while True:
                 data = stream.read(chunk)
@@ -64,6 +67,10 @@ class AudioManager:
                     silence_frames += 1
 
                 if detected_speech and silence_frames >= (silence_limit * rate) / chunk:
+                    break
+
+                if (time.time() - start_time) > self.recording_timeout:
+                    print("Recording timeout reached, stopping recording.")
                     break
 
             print("Finished recording.")

@@ -31,16 +31,20 @@ class OpenAIManager:
 
     def generate_completion_request(self, message, model_context) -> Union[
         ChatCompletion, Stream[ChatCompletionChunk]]:
-        completion = self.client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": model_context},
-                {"role": "user", "content": message},
-            ],
-            stream=True,
-            temperature=0,
-            max_tokens=500,
-        )
+        try:
+            completion = self.client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": model_context},
+                    {"role": "user", "content": message},
+                ],
+                stream=True,
+                temperature=0,
+                max_tokens=500,
+            )
+        except Exception as e:  # This catches any other exceptions
+            print("Caught an exception:", e)
+            completion = ""
         return completion
 
     def generate_transcription_request(self, file_path) -> str:
