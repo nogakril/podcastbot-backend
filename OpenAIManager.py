@@ -8,10 +8,10 @@ OPEN_API_SPEECH_URL = "https://api.openai.com/v1/audio/speech"
 
 
 class OpenAIManager:
-    def __init__(self, api_key):
+    def __init__(self, api_key, voice="nova"):
         self.api_key = api_key
         self.client = OpenAI(api_key=self.api_key)
-        self.voice = "nova"
+        self.voice = voice
         self.headers = {
             "Authorization": f'Bearer {self.api_key}',
         }
