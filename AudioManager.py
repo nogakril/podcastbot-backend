@@ -93,11 +93,11 @@ class AudioManager:
                 stream = self.audio.open(format=pyaudio.paInt16, channels=sound_file.channels,
                                          rate=sound_file.samplerate,
                                          output=True)
-                data = sound_file.read(1024, dtype='int16')
+                data = sound_file.read(2048, dtype='int16')
 
                 while len(data) > 0:
                     stream.write(data.tobytes())
-                    data = sound_file.read(102, dtype='int16')
+                    data = sound_file.read(2048, dtype='int16')
 
                 stream.stop_stream()
                 stream.close()
@@ -121,3 +121,4 @@ class AudioManager:
         final_mix = music_with_fades.overlay(combined, position=fade_duration)
         final_mix.export(output_path, format="wav")
         self.play_audio_file(output_path)
+        self.audio_files = []
