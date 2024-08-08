@@ -1,7 +1,9 @@
 import string
+from datetime import datetime
 from typing import Literal
 from AudioManager import AudioManager
 from OpenAIManager import OpenAIManager
+from S3Manager import S3Manager
 from SpeechToTextConverter import SpeechToTextConverter
 from TextToSpeechConverter import TextToSpeechConverter
 
@@ -33,14 +35,23 @@ def run_bot():
                                                             f"as respone to his\her previous answer: {discussion}",
                                                             "You are a podcast host")
             discussion_2 = speech_to_text_converter.speech_to_text()
-            text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question"
-                                                            f"as respone to his\her previous answer: {discussion_2}",
-                                                            "You are a podcast host")
-            discussion_3 = speech_to_text_converter.speech_to_text()
+            # text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question"
+            #                                                 f"as respone to his\her previous answer: {discussion_2}",
+            #                                                 "You are a podcast host")
+            # discussion_3 = speech_to_text_converter.speech_to_text()
             text_to_speech_converter.stream_generated_audio(f"Say goodbye and thanks to {name} for being here",
                                                             "You are a podcast host")
             audio_manager.combine_audio_files()
 
 
 if __name__ == '__main__':
-    run_bot()
+    # run_bot()
+    s3_manager = S3Manager(bucket_name="podcast-bot")
+    folder_key = s3_manager.create_folder()
+    cur_time = datetime.now()
+    print("Start time: ", cur_time)
+    file_path = "combined_audio.wav"
+    file_name = file_path.split("/")[-1]
+    s3_manager.upload_file(file_path, folder_key)
+    print("Time taken: ", datetime.now() - cur_time)
+    print(s3_manager.get_recording_url(folder_key, file_name))

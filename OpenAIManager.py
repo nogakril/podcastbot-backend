@@ -47,11 +47,11 @@ class OpenAIManager:
             completion = ""
         return completion
 
-    def generate_transcription_request(self, file_path) -> str:
+    def generate_transcription_request(self, file_path, lng='en') -> str:
         audio_file = open(file_path, "rb")
         transcription = self.client.audio.transcriptions.create(
             model='whisper-1',
             file=audio_file,
-            language='en'
+            language=lng
         )
         return transcription.text
