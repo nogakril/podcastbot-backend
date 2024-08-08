@@ -1,3 +1,5 @@
+import os
+
 import pyaudio
 import wave
 import soundfile as sf
@@ -102,7 +104,7 @@ class AudioManager:
                 stream.stop_stream()
                 stream.close()
 
-    def combine_audio_files(self, output_path="combined_audio.wav", fade_duration=3000, background_volume_dip=-15):
+    def combine_audio_files(self, output_path, fade_duration=3000, background_volume_dip=-15):
         combined = AudioSegment.empty()
         for file_path in self.audio_files[4:]:
             audio = AudioSegment.from_file(file_path, format="wav")
@@ -120,7 +122,7 @@ class AudioManager:
 
         final_mix = music_with_fades.overlay(combined, position=fade_duration)
         final_mix.export(output_path, format="wav")
-        self.play_audio_file(output_path)
         for file in self.audio_files:
-            file.close()
+            os.remove(file)
         self.audio_files = []
+        return output_path

@@ -16,7 +16,7 @@ class TextToSpeechConverter:
         self.__audio_generation_queue = queue.Queue()
         self.__audio_playback_queue = queue.Queue()
 
-    def stream_generated_audio(self, completion_input, model_context) -> None:
+    def stream_generated_audio(self, completion_input, model_context="You are a podcast host") -> None:
         self._initialize_queues()
         audio_generation_thread = threading.Thread(target=self._process_audio_generation_queue)
         audio_playback_thread = threading.Thread(target=self._process_audio_playback_queue)
@@ -30,6 +30,8 @@ class TextToSpeechConverter:
     def generate_audio(self, input_text) -> None:
         audio_file = self._generate_audio_file_from_text(input_text)
         self.__audio_manager.play_audio_file(audio_file)
+
+
 
     def _generate_audio_file_from_text(self, input_text) -> str:
         iterator = self.__openai_manager.generate_audio_request(input_text)
