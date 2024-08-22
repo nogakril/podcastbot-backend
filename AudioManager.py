@@ -8,11 +8,12 @@ import webrtcvad
 import time
 
 class AudioManager:
-    def __init__(self, music_file_path):
+    def __init__(self, music_file_path, update_client):
         self.audio = pyaudio.PyAudio()
         self.audio_files = []
         self.music_file_path = music_file_path
         self.recording_timeout = 120
+        self.update_client = update_client
 
     def __del__(self):
         self.audio.terminate()
@@ -89,6 +90,7 @@ class AudioManager:
             print(f"Recording saved: {file_path}")
 
     def play_audio_file(self, file_path) -> None:
+        self.update_client("speaking")
         if file_path:
             self.audio_files.append(file_path)
             with sf.SoundFile(file_path, 'r') as sound_file:

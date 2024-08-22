@@ -1,14 +1,22 @@
 import threading
-from flask import Flask, request
+import time
+
+from flask import Flask
+from flask_cors import CORS
+from flask_socketio import SocketIO
+
 from PodcastBot import PodcastBot
 from datetime import datetime
-from flask_cors import CORS
 
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
 
-podcast_bot = PodcastBot()
 OUTPUT_FILE_PATH = 'combined_audio.wav'
+
+
+def update_client(state):
+    socketio.emit('status_update', {'state': state}, namespace='/')
 
 
 def run_bot_in_background(output_file_path, cur_time):
@@ -27,4 +35,5 @@ def run_session():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    podcast_bot = PodcastBot(update_client)
+    socketio.run(app, allow_unsafe_werkzeug=True, debug=True)

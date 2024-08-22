@@ -6,11 +6,12 @@ import tempfile
 
 
 class TextToSpeechConverter:
-    def __init__(self, audio_manager: AudioManager, openai_manager: OpenAIManager):
+    def __init__(self, audio_manager: AudioManager, openai_manager: OpenAIManager, update_client):
         self.__audio_manager = audio_manager
         self.__openai_manager = openai_manager
         self.__audio_generation_queue = None
         self.__audio_playback_queue = None
+        self.__update_client = update_client
 
     def _initialize_queues(self):
         self.__audio_generation_queue = queue.Queue()
@@ -29,6 +30,7 @@ class TextToSpeechConverter:
 
     def generate_audio(self, input_text) -> None:
         audio_file = self._generate_audio_file_from_text(input_text)
+        self.__update_client("speaking")
         self.__audio_manager.play_audio_file(audio_file)
 
 
