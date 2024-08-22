@@ -1,6 +1,5 @@
-import string
 import threading
-from datetime import datetime
+import time
 from typing import Literal
 from AudioManager import AudioManager
 from OpenAIManager import OpenAIManager
@@ -36,12 +35,18 @@ class PodcastBot:
             self.update_client("loading")
             output_folder_key = self.__s3_manager.create_folder(timestamp)
             # self.__audio_manager.play_audio_file("get_name.wav")
-            self.__text_to_speech_converter.generate_audio("Hello dear, what's' your name?")
+            self.__text_to_speech_converter.generate_audio("Hello dear. welcome to the Jerusalem Design Week. We'll "
+                                                           "start our recording very soon. Please remember to speak "
+                                                           "in English, slowly and clearly. Before we begin, can I ask "
+                                                           "what is your name?")
             self.update_client("listening")
-            name = self.__speech_to_text_converter.speech_to_text()
+            name = self.__speech_to_text_converter.speech_to_text(lng='he')
             # self.__audio_manager.play_audio_file("get_topic.wav")
             self.update_client("loading")
-            self.__text_to_speech_converter.generate_audio(f"Which topic should we discuss in our podcast episode today?")
+            self.__text_to_speech_converter.generate_audio(f"Now, which topic should we discuss in our podcast "
+                                                           f"episode today? I'll give you a moment to think about it.")
+            self.update_client("loading")
+            time.sleep(5)
             self.update_client("listening")
             topic = self.__speech_to_text_converter.speech_to_text()
             self.update_client("loading")
@@ -67,7 +72,7 @@ class PodcastBot:
             upload_thread = threading.Thread(target=self.upload_file_in_background,
                                              args=(output_file_path, output_folder_key))
             upload_thread.start()
-            self.__audio_manager.play_audio_file(output_file_path)
+            self.__audio_manager.play_audio_file(output_file_path, "playing")
             upload_thread.join()
             self.update_client("done")
         except Exception as e:

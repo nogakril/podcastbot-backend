@@ -19,9 +19,16 @@ def update_client(state):
     socketio.emit('status_update', {'state': state}, namespace='/')
 
 
+def run_bot_mock():
+    for status in ['loading', 'listening', 'speaking', 'loading', 'playing', 'done']:
+        update_client(status)
+        time.sleep(3)
+
+
 def run_bot_in_background(output_file_path, cur_time):
     podcast_bot.run_bot(output_file_path, cur_time)
-
+    # run_bot_mock()
+#
 
 @app.route('/run_session', methods=['GET'])
 def run_session():

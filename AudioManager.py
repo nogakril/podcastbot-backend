@@ -89,8 +89,8 @@ class AudioManager:
             wf.close()
             print(f"Recording saved: {file_path}")
 
-    def play_audio_file(self, file_path) -> None:
-        self.update_client("speaking")
+    def play_audio_file(self, file_path, status="speaking") -> None:
+        self.update_client(status)
         if file_path:
             self.audio_files.append(file_path)
             with sf.SoundFile(file_path, 'r') as sound_file:
