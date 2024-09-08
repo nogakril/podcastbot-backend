@@ -77,6 +77,7 @@ class PodcastBot:
             self.update_client("done")
         except Exception as e:
             print("Error: ", e)
+            self.update_client("pending")
         finally:
             self.__in_session = False
             print("Session ended")
