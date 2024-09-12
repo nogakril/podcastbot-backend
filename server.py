@@ -28,10 +28,10 @@ def run_bot_mock():
 def run_bot_in_background(output_file_path, cur_time):
     podcast_bot.run_bot(output_file_path, cur_time)
     # run_bot_mock()
-#
 
 @app.route('/run_session', methods=['GET'])
 def run_session():
+    global podcast_bot
     cur_time = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     if podcast_bot.in_session():
         return {"error": "The session is already in progress."}, 400
@@ -42,5 +42,7 @@ def run_session():
 
 
 if __name__ == '__main__':
+    print("Starting the Flask app...")
+    update_client("pending")
     podcast_bot = PodcastBot(update_client)
     socketio.run(app, allow_unsafe_werkzeug=True, debug=True)

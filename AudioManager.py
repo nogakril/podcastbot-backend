@@ -42,7 +42,7 @@ class AudioManager:
             wf.writeframes(b''.join(frames))
             wf.close()
 
-    def record_to_wav_file(self, file_path, save_file,  chunk=320, channels=1, rate=16000, silence_limit=1,
+    def record_to_wav_file(self, file_path, save_file,  chunk=320, channels=1, rate=16000, silence_limit=3,
                            vad_aggressiveness=3):
         vad = webrtcvad.Vad(vad_aggressiveness)
         if file_path:

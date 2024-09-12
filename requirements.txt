@@ -44,3 +44,5 @@ urllib3==1.26.19
 webrtcvad==2.0.10
 Werkzeug==3.0.1
 zipp==3.17.0
+Flask-SocketIO~=5.3.7
+webrtcvad-wheels~=2.0.14

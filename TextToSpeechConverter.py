@@ -56,8 +56,12 @@ class TextToSpeechConverter:
             audio_file_path = self.__audio_playback_queue.get()
             if audio_file_path is None:
                 break
-            self.__audio_manager.play_audio_file(audio_file_path)
-            self.__audio_playback_queue.task_done()
+            try:
+                self.__audio_manager.play_audio_file(audio_file_path)
+                self.__audio_playback_queue.task_done()
+            except Exception as e:
+                print("in _process_audio_playback_queue: ", e)
+
 
     def _run_and_cleanup_queues(self) -> None:
         self.__audio_generation_queue.join()
