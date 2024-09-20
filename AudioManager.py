@@ -12,7 +12,7 @@ class AudioManager:
         self.audio = pyaudio.PyAudio()
         self.audio_files = []
         self.music_file_path = music_file_path
-        self.recording_timeout = 120
+        self.recording_timeout = 30
         self.update_client = update_client
 
     def __del__(self):
@@ -106,8 +106,10 @@ class AudioManager:
                 stream.stop_stream()
                 stream.close()
 
-    def combine_audio_files(self, output_path, fade_duration=3000, background_volume_dip=-15):
+    def combine_audio_files(self, output_path, fade_duration=4000, background_volume_dip=-25):
         combined = AudioSegment.empty()
+        if "combined_audio.wav" in self.audio_files:
+            self.audio_files.remove("combined_audio.wav")
         for file_path in self.audio_files[4:]:
             audio = AudioSegment.from_file(file_path, format="wav")
             combined += audio
@@ -124,7 +126,7 @@ class AudioManager:
 
         final_mix = music_with_fades.overlay(combined, position=fade_duration)
         final_mix.export(output_path, format="wav")
-        for file in self.audio_files:
-            os.remove(file)
+        # for file in self.audio_files:
+        #     os.remove(file)
         self.audio_files = []
         return output_path

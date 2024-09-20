@@ -23,7 +23,7 @@ class OpenAIManager:
             "voice": self.voice,
             "response_format": "wav",
         }
-        response = requests.post(OPEN_API_SPEECH_URL, headers=self.headers, json=data, stream=True)
+        response = requests.post(OPEN_API_SPEECH_URL, headers=self.headers, json=data, stream=True, timeout=5)
         if response.status_code == 200:
             return response
         else:
@@ -41,6 +41,7 @@ class OpenAIManager:
                 stream=True,
                 temperature=0,
                 max_tokens=500,
+                timeout=5
             )
         except Exception as e:  # This catches any other exceptions
             print("Caught an exception:", e)
@@ -52,6 +53,7 @@ class OpenAIManager:
         transcription = self.client.audio.transcriptions.create(
             model='whisper-1',
             file=audio_file,
-            language=lng
+            language=lng,
+            timeout=5
         )
         return transcription.text

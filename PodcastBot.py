@@ -35,10 +35,10 @@ class PodcastBot:
             self.update_client("loading")
             output_folder_key = self.__s3_manager.create_folder(timestamp)
             # self.__audio_manager.play_audio_file("get_name.wav")
-            self.__text_to_speech_converter.generate_audio("Hello dear. welcome to the Jerusalem Design Week. We'll "
-                                                           "start our recording very soon. Please remember to speak "
-                                                           "in English, slowly and clearly. Before we begin, can I ask "
-                                                           "what is your name?")
+            self.__text_to_speech_converter.generate_audio("Hello dear, welcome to the Jerusalem Design Week. We'll "
+                                                           "start our recording very soon! Please remember to speak "
+                                                           "in English, slowly and clearly. Before we begin, can you say "
+                                                           "your name to the mic?")
             self.update_client("listening")
             name = self.__speech_to_text_converter.speech_to_text(lng='he')
             # self.__audio_manager.play_audio_file("get_topic.wav")
@@ -46,7 +46,7 @@ class PodcastBot:
             self.__text_to_speech_converter.generate_audio(f"Now, which topic should we discuss in our podcast "
                                                            f"episode today? I'll give you a moment to think about it.")
             self.update_client("loading")
-            time.sleep(5)
+            time.sleep(2)
             self.update_client("listening")
             topic = self.__speech_to_text_converter.speech_to_text()
             self.update_client("loading")
@@ -56,16 +56,17 @@ class PodcastBot:
             self.update_client("listening")
             discussion = self.__speech_to_text_converter.speech_to_text()
             self.update_client("loading")
-            self.__text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question"
-                                                                   f"as respone to his\her previous answer: {discussion}")
+            self.__text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question on the "
+                                                                   f"topic: {topic}"
+                                                                   f"as response to his\her previous answer: {discussion}")
             self.update_client("listening")
             discussion_2 = self.__speech_to_text_converter.speech_to_text()
             self.update_client("loading")
-            self.__text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question"
-                                                                   f"as respone to his\her previous answer: {discussion_2}")
-            self.update_client("listening")
-            self.__speech_to_text_converter.speech_to_text()
-            self.update_client("loading")
+            # self.__text_to_speech_converter.stream_generated_audio(f"ask your interviewer a follow up question on the topic: {topic} "
+            #                                                        f"as response to his\her previous answer: {discussion_2}")
+            # self.update_client("listening")
+            # self.__speech_to_text_converter.speech_to_text()
+            # self.update_client("loading")
             self.__text_to_speech_converter.stream_generated_audio(f"Say goodbye and thanks to {name} for being here")
             self.update_client("loading")
             self.__audio_manager.combine_audio_files(output_path=output_file_path)
