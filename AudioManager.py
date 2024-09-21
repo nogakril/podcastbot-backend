@@ -43,7 +43,7 @@ class AudioManager:
             wf.close()
 
     def record_to_wav_file(self, file_path, save_file,  chunk=320, channels=1, rate=16000, silence_limit=3,
-                           vad_aggressiveness=3):
+                           vad_aggressiveness=3, recording_seconds=30):
         vad = webrtcvad.Vad(vad_aggressiveness)
         if file_path:
             if save_file:
@@ -73,7 +73,7 @@ class AudioManager:
                 if detected_speech and silence_frames >= (silence_limit * rate) / chunk:
                     break
 
-                if (time.time() - start_time) > self.recording_timeout:
+                if (time.time() - start_time) > recording_seconds:
                     print("Recording timeout reached, stopping recording.")
                     break
 
@@ -125,7 +125,10 @@ class AudioManager:
         music_with_fades = pre_music + during_podcast_music + post_music
 
         final_mix = music_with_fades.overlay(combined, position=fade_duration)
-        final_mix.export(output_path, format="wav")
+        # final_mix.export(output_path, format="wav")
+        # final_mix.export(output_path, format="wav", bitrate="64k", parameters=["-ar", "22050", "-ac", "1"])
+        final_mix.export(output_path, format="mp3", bitrate="64k")
+
         # for file in self.audio_files:
         #     os.remove(file)
         self.audio_files = []

@@ -40,7 +40,7 @@ class PodcastBot:
                                                            "in English, slowly and clearly. Before we begin, can you say "
                                                            "your name to the mic?")
             self.update_client("listening")
-            name = self.__speech_to_text_converter.speech_to_text(lng='he')
+            name = self.__speech_to_text_converter.speech_to_text(lng='he', record_seconds=10)
             # self.__audio_manager.play_audio_file("get_topic.wav")
             self.update_client("loading")
             self.__text_to_speech_converter.generate_audio(f"Now, which topic should we discuss in our podcast "
@@ -48,11 +48,11 @@ class PodcastBot:
             self.update_client("loading")
             time.sleep(2)
             self.update_client("listening")
-            topic = self.__speech_to_text_converter.speech_to_text()
+            topic = self.__speech_to_text_converter.speech_to_text(record_seconds=10)
             self.update_client("loading")
             self.__text_to_speech_converter.stream_generated_audio(
                 f"Very shortly introduce a podcast episode about the topic: {topic}. "
-                f"Shortly introduce your interviewee named {name}. Ask a general opinion question related the topic")
+                f"Very shortly introduce your interviewee named {name}. Ask a general opinion question related the topic")
             self.update_client("listening")
             discussion = self.__speech_to_text_converter.speech_to_text()
             self.update_client("loading")
@@ -72,8 +72,9 @@ class PodcastBot:
             self.__audio_manager.combine_audio_files(output_path=output_file_path)
             upload_thread = threading.Thread(target=self.upload_file_in_background,
                                              args=(output_file_path, output_folder_key))
+            self.update_client("playing")
             upload_thread.start()
-            self.__audio_manager.play_audio_file(output_file_path, "playing")
+            # self.__audio_manager.play_audio_file(output_file_path, "playing")
             upload_thread.join()
             self.update_client("done")
         except Exception as e:

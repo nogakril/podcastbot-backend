@@ -4,6 +4,8 @@ from openai import OpenAI, Stream
 from openai.types.chat import ChatCompletion, ChatCompletionChunk
 from requests import Response
 
+from server import update_client
+
 OPEN_API_SPEECH_URL = "https://api.openai.com/v1/audio/speech"
 
 
@@ -17,20 +19,23 @@ class OpenAIManager:
         }
 
     def generate_audio_request(self, input_text) -> Response:
-        data = {
-            "model": "tts-1",
-            "input": input_text,
-            "voice": self.voice,
-            "response_format": "wav",
-        }
-        response = requests.post(OPEN_API_SPEECH_URL, headers=self.headers, json=data, stream=True, timeout=5)
-        if response.status_code == 200:
-            return response
-        else:
-            print(f"Error: {response.status_code} - {response.text}")
+       try:
+            data = {
+                "model": "tts-1",
+                "input": input_text,
+                "voice": self.voice,
+                "response_format": "wav",
+            }
+            response = requests.post(OPEN_API_SPEECH_URL, headers=self.headers, json=data, stream=True, timeout=10)
+            if response.status_code == 200:
+                return response
+            else:
+                print(f"Error in generate_audio_request: {response.status_code} - {response.text}")
+       except Exception as e:
+            print(f"Error: {e}")
+            raise e
 
-    def generate_completion_request(self, message, model_context) -> Union[
-        ChatCompletion, Stream[ChatCompletionChunk]]:
+    def generate_completion_request(self, message, model_context) -> Exception | Stream[ChatCompletionChunk]:
         try:
             completion = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -41,11 +46,12 @@ class OpenAIManager:
                 stream=True,
                 temperature=0,
                 max_tokens=500,
-                timeout=5
+                request_timeout=10,
+                timeout=10
             )
         except Exception as e:  # This catches any other exceptions
-            print("Caught an exception:", e)
-            completion = ""
+            print("Caught an exception in generate_completion_request:", e)
+            raise e
         return completion
 
     def generate_transcription_request(self, file_path, lng='en') -> str:
@@ -54,6 +60,6 @@ class OpenAIManager:
             model='whisper-1',
             file=audio_file,
             language=lng,
-            timeout=5
+            timeout=10
         )
         return transcription.text

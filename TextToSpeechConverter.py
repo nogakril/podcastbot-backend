@@ -34,9 +34,13 @@ class TextToSpeechConverter:
         audio_playback_thread.join()
 
     def generate_audio(self, input_text) -> None:
-        audio_file = self._generate_audio_file_from_text(input_text)
-        self.__update_client("speaking")
-        self.__audio_manager.play_audio_file(audio_file)
+        try:
+            audio_file = self._generate_audio_file_from_text(input_text)
+            self.__update_client("speaking")
+            self.__audio_manager.play_audio_file(audio_file)
+        except Exception as e:
+            print(e)
+            raise e
 
 
 
@@ -46,7 +50,6 @@ class TextToSpeechConverter:
         iterator = self.__openai_manager.generate_audio_request(input_text)
         end_time = time.time()
         print(f"API response time for generating audio request: {end_time - start_time} seconds")
-        print()
         with tempfile.NamedTemporaryFile(delete=False, suffix='.opus') as temp_file:
             for chunk in iterator.iter_content(chunk_size=4096):
                 temp_file.write(chunk)
@@ -111,4 +114,4 @@ class TextToSpeechConverter:
             return
         except Exception as e:
             print("Error getting completion request: ", e)
-            return e
+            raise e

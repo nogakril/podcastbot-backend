@@ -12,7 +12,7 @@ class SpeechToTextConverter:
         with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as tmp_file:
             temp_file_path = tmp_file.name
         # self.__audio_manager.record_to_wav_file(file_path=temp_file_path, record_seconds=record_seconds)
-        self.__audio_manager.record_to_wav_file(file_path=temp_file_path, save_file=save_file)
+        self.__audio_manager.record_to_wav_file(file_path=temp_file_path, save_file=save_file, recording_seconds=record_seconds)
         try:
             output = self.__openai_manager.generate_transcription_request(file_path=temp_file_path, lng=lng)
         except Exception as e:  # This catches any other exceptions
