@@ -1,12 +1,15 @@
 import boto3
 from datetime import datetime
 
+KEY = ""
+SECRET = ""
+
 
 class S3Manager:
     def __init__(self, bucket_name):
         self.bucket_name = bucket_name
-        self.session = boto3.Session(aws_access_key_id="AKIASGJUNWQSFKW2UMRH",
-                                     aws_secret_access_key="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")
+        self.session = boto3.Session(aws_access_key_id=KEY,
+                                     aws_secret_access_key=SECRET)
         self.s3 = self.session.client('s3')
 
     def upload_file(self, file_path, folder_key):
